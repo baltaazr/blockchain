@@ -9,13 +9,12 @@ socket.on('error', (err) => {
 
 socket.on('message', (msg, rinfo) => {
   const message = 'transaction received';
-  socket.setBroadcast(true);
   socket.send(
     message,
     0,
     message.length,
     config.get('transactionsPort'),
-    '255.255.255.255'
+    rinfo.address
   );
   console.log(JSON.parse(msg.toString()));
 });
