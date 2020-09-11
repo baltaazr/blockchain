@@ -4,10 +4,6 @@ class Transaction {
     this.receiver = receiver;
     this.amount = amount;
   }
-
-  get json() {
-    return JSON.stringify(this);
-  }
 }
 
 module.exports = Transaction;

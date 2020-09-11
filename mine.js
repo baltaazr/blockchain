@@ -1,6 +1,10 @@
 const dgram = require('dgram');
 const socket = dgram.createSocket('udp4');
 const config = require('config');
+const read_blockchain = require('read_blockchain');
+const write_blockchain = require('write_blockchain');
+
+const blockchain = read_blockchain();
 
 socket.on('error', (err) => {
   console.log(`socket error:\n${err.stack}`);
@@ -8,6 +12,7 @@ socket.on('error', (err) => {
 });
 
 socket.on('message', (msg, rinfo) => {
+  if (blockchain.unconfirmed_transactions.length >= 5) return;
   const message = 'transaction received';
   socket.send(
     message,
@@ -16,7 +21,19 @@ socket.on('message', (msg, rinfo) => {
     config.get('transactionsPort'),
     rinfo.address
   );
-  console.log(JSON.parse(msg.toString()));
+  blockchain.add_new_transaction(JSON.parse(msg.toString()));
+  write_blockchain(blockchain);
+  if (blockchain.unconfirmed_transactions.length >= 5) {
+    const new_block = blockchain.mine();
+    socket.setBroadcast(true);
+    socket.send(
+      JSON.stringify(new_block),
+      '255.255.255.255',
+      config.get('blocksPort')
+    );
+    write_blockchain(blockchain);
+    socket.setBroadcast(false);
+  }
 });
 
 socket.on('listening', () => {

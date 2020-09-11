@@ -27,7 +27,7 @@ class Blockchain {
     the chain. The block has index 0, previous_hash as 0, and
     a valid hash.
     */
-    var genesis_block = new Block(0, [], '0');
+    const genesis_block = new Block(0, [], '0');
     this.chain.push(genesis_block);
   }
 
@@ -47,7 +47,7 @@ class Blockchain {
     * The previous_hash referred in the block and the hash of latest block
       in the chain match.
     */
-    var previous_hash = this.last_block.compute_hash();
+    const previous_hash = this.last_block.compute_hash();
     if (previous_hash !== block.previous_hash) {
       return false;
     }
@@ -60,7 +60,7 @@ class Blockchain {
 
   static proof_of_work(block) {
     block.nonce = 0;
-    var computed_hash = block.compute_hash();
+    let computed_hash = block.compute_hash();
     while (!computed_hash.startsWith('0'.repeat(Blockchain.difficulty))) {
       block.nonce += 1;
       computed_hash = block.compute_hash();
@@ -81,8 +81,8 @@ class Blockchain {
   }
 
   check_chain_validity(chain) {
-    var result = true;
-    var previous_hash = '0';
+    let result = true;
+    let previous_hash = '0';
     chain.forEach((block) => {
       //remove the hash field to recompute the hash again
       //using `compute_hash` method.
@@ -92,7 +92,7 @@ class Blockchain {
       ) {
         result = false;
       }
-      previous_hash = block_hash;
+      previous_hash = block.compute_hash();
     });
     return result;
   }
@@ -106,8 +106,8 @@ class Blockchain {
     if (this.unconfirmed_transactions.length < 1) {
       return false;
     }
-    var last_block = this.last_block;
-    var new_block = new Block(
+    const last_block = this.last_block;
+    const new_block = new Block(
       last_block.index + 1,
       this.unconfirmed_transactions,
       last_block.compute_hash()
@@ -117,7 +117,7 @@ class Blockchain {
     this.unconfirmed_transactions = [];
 
     // TODO: Broadcast it to the world
-    return true;
+    return new_block;
   }
 }
 

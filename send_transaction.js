@@ -24,9 +24,12 @@ socket.on('listening', () => {
     return;
   }
   const transaction = new Transaction(address, myArgs[0], +myArgs[1]);
-  console.log(transaction.json);
   socket.setBroadcast(true);
-  socket.send(transaction.json, config.get('minePort'), '255.255.255.255');
+  socket.send(
+    JSON.stringify(transaction),
+    config.get('minePort'),
+    '255.255.255.255'
+  );
 });
 
 socket.bind(config.get('transactionsPort'));
