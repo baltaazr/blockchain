@@ -4,14 +4,13 @@ const config = require('config');
 const read_blockchain = require('./read_blockchain');
 const write_blockchain = require('./write_blockchain');
 
-const blockchain = read_blockchain();
-
 socket.on('error', (err) => {
   console.log(`socket error:\n${err.stack}`);
   socket.close();
 });
 
-socket.on('message', (msg, rinfo) => {
+socket.on('message', async (msg, rinfo) => {
+  const blockchain = await read_blockchain();
   if (blockchain.unconfirmed_transactions.length >= 5) return;
   const message = 'transaction received';
   socket.send(
@@ -22,18 +21,18 @@ socket.on('message', (msg, rinfo) => {
     rinfo.address
   );
   blockchain.add_new_transaction(JSON.parse(msg.toString()));
-  write_blockchain(blockchain);
-  if (blockchain.unconfirmed_transactions.length >= 5) {
-    const new_block = blockchain.mine();
-    socket.setBroadcast(true);
-    socket.send(
-      JSON.stringify(new_block),
-      '255.255.255.255',
-      config.get('blocksPort')
-    );
-    write_blockchain(blockchain);
-    socket.setBroadcast(false);
-  }
+  // write_blockchain(blockchain);
+  // if (blockchain.unconfirmed_transactions.length >= 5) {
+  //   const new_block = blockchain.mine();
+  //   socket.setBroadcast(true);
+  //   socket.send(
+  //     JSON.stringify(new_block),
+  //     '255.255.255.255',
+  //     config.get('blocksPort')
+  //   );
+  //   write_blockchain(blockchain);
+  //   socket.setBroadcast(false);
+  // }
 });
 
 socket.on('listening', () => {
