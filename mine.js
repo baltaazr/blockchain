@@ -13,7 +13,6 @@ socket.on('error', (err) => {
 
 socket.on('message', async (msg, rinfo) => {
   const blockchain = read_blockchain();
-  console.log(blockchain);
   if (blockchain.unconfirmed_transactions.length >= 5) return;
   const message = 'transaction received';
   socket.send(
@@ -25,17 +24,17 @@ socket.on('message', async (msg, rinfo) => {
   );
   blockchain.add_new_transaction(JSON.parse(msg.toString()));
   write_blockchain(blockchain);
-  // if (blockchain.unconfirmed_transactions.length >= 5) {
-  //   const new_block = blockchain.mine();
-  //   socket.setBroadcast(true);
-  //   socket.send(
-  //     JSON.stringify(new_block),
-  //     '255.255.255.255',
-  //     config.get('blocksPort')
-  //   );
-  //   write_blockchain(blockchain);
-  //   socket.setBroadcast(false);
-  // }
+  if (blockchain.unconfirmed_transactions.length >= 5) {
+    const new_block = blockchain.mine();
+    socket.setBroadcast(true);
+    socket.send(
+      JSON.stringify(new_block),
+      '255.255.255.255',
+      config.get('blocksPort')
+    );
+    write_blockchain(blockchain);
+    socket.setBroadcast(false);
+  }
 });
 
 socket.on('listening', () => {
