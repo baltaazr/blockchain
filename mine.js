@@ -1,8 +1,8 @@
 const dgram = require('dgram');
 const socket = dgram.createSocket('udp4');
 const config = require('config');
-const read_blockchain = require('read_blockchain');
-const write_blockchain = require('write_blockchain');
+const read_blockchain = require('./read_blockchain');
+const write_blockchain = require('./write_blockchain');
 
 const blockchain = read_blockchain();
 
