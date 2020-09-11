@@ -28,6 +28,7 @@ class Blockchain {
     a valid hash.
     */
     const genesis_block = new Block(0, [], '0');
+    genesis_block.timestamp = 0;
     this.chain.push(genesis_block);
   }
 
