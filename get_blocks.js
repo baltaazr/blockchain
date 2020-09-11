@@ -1,5 +1,6 @@
 const dgram = require('dgram');
 const Block = require('./Block');
+const config = require('config');
 const read_blockchain = require('./read_blockchain');
 const write_blockchain = require('./write_blockchain');
 
@@ -26,4 +27,4 @@ socket.on('message', (msg) => {
   write_blockchain(blockchain);
 });
 
-socket.bind(41234);
+socket.bind(config.get('blocksPort'));

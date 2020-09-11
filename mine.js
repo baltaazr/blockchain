@@ -25,7 +25,9 @@ socket.on('message', async (msg, rinfo) => {
   blockchain.add_new_transaction(JSON.parse(msg.toString()));
   write_blockchain(blockchain);
   if (blockchain.unconfirmed_transactions.length >= 5) {
+    console.log('mining');
     const new_block = blockchain.mine();
+    console.log('finished mining');
     socket.setBroadcast(true);
     socket.send(
       JSON.stringify(new_block),
@@ -33,13 +35,14 @@ socket.on('message', async (msg, rinfo) => {
       '255.255.255.255'
     );
     write_blockchain(blockchain);
-    socket.setBroadcast(false);
   }
 });
 
 socket.on('listening', () => {
   const address = socket.address();
   console.log(`socket listening ${address.address}:${address.port}`);
+
+  socket.setBroadcast(true);
 });
 
 socket.bind(config.get('minePort'));

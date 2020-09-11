@@ -1,6 +1,6 @@
 {
   "minePort": 41233,
   "transactionsPort": 41234,
-  "blocksPort": 41235,
-  "blockchainsPorts": 41236
+  "blocksPort": 41231,
+  "blockchainsPorts": 41232
 }
