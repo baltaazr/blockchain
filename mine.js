@@ -29,8 +29,8 @@ socket.on('message', async (msg, rinfo) => {
     socket.setBroadcast(true);
     socket.send(
       JSON.stringify(new_block),
-      '255.255.255.255',
-      config.get('blocksPort')
+      config.get('blocksPort'),
+      '255.255.255.255'
     );
     write_blockchain(blockchain);
     socket.setBroadcast(false);
